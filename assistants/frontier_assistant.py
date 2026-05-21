@@ -1,19 +1,38 @@
-from openai import OpenAI
-from dotenv import load_dotenv
-import os
+from google import genai
 
-load_dotenv()
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+# ---------------- CREATE CLIENT ---------------- #
+
+client = genai.Client(
+    api_key="AIzaSyBBxFNKrEBhBc048YRujfUwXdR2BcfSk38"
 )
 
 
-def generate_frontier_response(messages):
+# ---------------- FRONTIER RESPONSE ---------------- #
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=messages
-    )
+def generate_frontier_response(prompt):
 
-    return response.choices[0].message.content
+    try:
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
+
+        return response.text
+
+    except Exception as e:
+
+        error_message = str(e)
+
+        # Quota exceeded
+        if "429" in error_message:
+
+            return (
+                "Frontier model quota exceeded. "
+                "Please try again later."
+            )
+
+        return (
+            "Unable to generate response right now."
+        )

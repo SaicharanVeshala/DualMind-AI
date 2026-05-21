@@ -17,9 +17,8 @@ def generate_oss_response(prompt):
 
         return response["message"]["content"]
 
-    except Exception as e:
+    except Exception:
 
         return (
-            "Unable to generate response. "
-            f"Error: {str(e)}"
+            "Unable to generate response right now."
         )
